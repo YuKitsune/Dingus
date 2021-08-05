@@ -1,33 +1,58 @@
-const dotenv = require('dotenv');
-dotenv.config();
+import dotenv from 'dotenv';
+import { Client, Intents } from 'discord.js';
+import setupCommands from './setupCommands.js';
+import allCommands from './commands/allCommands.js';
 
-const { Client, Intents } = require('discord.js');
-const client = new Client({ intents: [Intents.FLAGS.GUILDS, Intents.FLAGS.GUILD_MESSAGES] });
+const main = async () => {
 
-client.once('ready', () => {
-	console.log('Ready!');
-});
+	// Load from .env file
+	dotenv.config();
 
-client.on('messageCreate', async message => {
-	if (!client.application?.owner) await client.application?.fetch();
+	// Setup the client
+	const client = new Client({ intents: [Intents.FLAGS.GUILDS, Intents.FLAGS.GUILD_MESSAGES] });
 
-	if (message.content.toLowerCase() === '!deploy' && message.author.id === client.application?.owner.id) {
-		const data = {
-			name: 'ping',
-			description: 'Replies with Pong!',
-		};
+	client.once('ready', () => {
+		console.log('NecroBot is ready!');
+	});
 
-		const command = await client.guilds.cache.get(message.guild.id)?.commands.create(data);
-		console.log(command);
-	}
-});
+	// Setup the slash commands when joining a guild
+	// Message the owner if there are any issues
+	client.on('guildCreate', async guild => {
+		await setupCommands(guild, guild.owner)
+	});
 
-client.on('interactionCreate', async interaction => {
-	if (!interaction.isCommand()) return;
+	client.on('messageCreate', async message => {
 
-	if (interaction.commandName === 'ping') {
-		await interaction.reply('Pong!');
-	}
-});
+		// Ignore bots
+		if (message.author.bot) return;
 
-client.login(process.env.TOKEN);
+		// If the server owner asks the bot to reset, then the commands are setup again
+		if (message.guild.ownerId === message.author.id &&
+			message.mentions.has(client.user) &&
+		    message.content.includes("reset")) {
+			const commandsSetup = await setupCommands(message.guild, message.author)
+			if (commandsSetup) {
+				await message.reply("Done!");
+			}
+		}
+
+		// Todo: If this channel is set up with NecroBot, reset the reminder timer
+	});
+
+	// Handle any slash commands
+	client.on('interactionCreate', async interaction => {
+		if (!interaction.isCommand()) return;
+
+		for (let i = 0; i < allCommands.length; i++) {
+			let command = allCommands[i];
+			if (command.name === interaction.commandName) {
+				await command.execute(interaction);
+				return;
+			}
+		}
+	})
+
+	await client.login(process.env.TOKEN);
+}
+
+await main();
