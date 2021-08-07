@@ -49,13 +49,10 @@ export const addOrUpdateReminderTimer = (bot, channelId, idleSeconds) => {
 }
 
 export const removeReminderTimer = (channelId) => {
-	console.log("Stopping")
 	const reminderTimeout = activeReminders[channelId];
-	console.log("Reminder", reminderTimeout);
 	if (reminderTimeout) {
 		clearTimeout(reminderTimeout);
-		delete activeReminders[channelId]
-		console.log("Reminders", activeReminders);
+		delete activeReminders[channelId];
 	}
 }
 
