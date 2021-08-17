@@ -2,6 +2,7 @@ import dotenv from 'dotenv';
 import { purgeMissingChannels } from './db.js';
 import setupBot from './bot.js';
 import { setupReminderTimer } from './reminderTimer.js';
+import { setupMetrics } from './metrics.js';
 
 const main = async () => {
 
@@ -14,6 +15,8 @@ const main = async () => {
 	await purgeMissingChannels();
 
 	// Todo: Pre-fill the cache
+
+	setupMetrics();
 
 	// Setup the bot
 	const bot = setupBot();

@@ -1,4 +1,5 @@
 import { MongoClient } from 'mongodb';
+import { metrics } from './metrics.js';
 
 const host = process.env.DB_HOST;
 const dbName = process.env.DB_NAME;
@@ -41,6 +42,7 @@ export const addOrUpdateReminder = async (channelId, idleSeconds) => {
 				console.log("Updated one document.");
 			}
 			if (result.upsertedCount === 1) {
+				metrics.reminderCounter.inc(1);
 				console.log("Inserted one new document.");
 			}
 		}
@@ -73,6 +75,7 @@ export const removeReminder = async (channelId) => {
 		const query = { channelId: channelId };
 		const result = await db.collection(reminderCollection).deleteOne(query);
 		if (result.deletedCount === 1) {
+			metrics.reminderCounter.dec(1);
 			console.log("Successfully deleted one document.");
 		} else {
 			console.log("No documents matched the query. Deleted 0 documents.");

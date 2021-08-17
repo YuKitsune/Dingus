@@ -1,4 +1,5 @@
 import { getAllReminders, getReminderFor, removeReminder } from './db.js';
+import { metrics } from './metrics.js';
 
 export let activeReminders = {};
 
@@ -29,6 +30,7 @@ export const addReminderTimerFromStartup = async (bot, channelId, idleSeconds, l
 	// If we're late, just necro the channel immediately
 	// Todo: Maybe just delete the reminder?
 	if (currentUnixTimeSeconds > lastMessageUnixTimeSeconds + idleSeconds) {
+		metrics.lateCounter.inc();
 		await necro(bot, channelId, idleSeconds);
 		return;
 	}

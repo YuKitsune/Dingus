@@ -13,7 +13,9 @@
   "dependencies": {
     "discord.js": "^13.0.0-dev.t1628035429.00d5cee",
     "dotenv": "^10.0.0",
-    "mongodb": "^4.1.0"
+    "express": "^4.17.1",
+    "mongodb": "^4.1.0",
+    "prom-client": "^13.2.0"
   },
   "devDependencies": {
     "eslint": "^7.32.0"

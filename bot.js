@@ -1,22 +1,41 @@
 import { Client, Intents } from 'discord.js';
 import setupCommands from './commands/setupCommands.js';
 import allCommands from './commands/allCommands.js';
-import { addOrUpdateReminder, getReminderFor } from './db.js';
+import { addOrUpdateReminder, getReminderFor, reminderCollection, usingDb } from './db.js';
 import { addOrUpdateReminderTimer } from './reminderTimer.js';
+import { metrics } from './metrics.js';
 
 const setupBot = () => {
 
 	// Setup the client
 	const client = new Client({ intents: [Intents.FLAGS.GUILDS, Intents.FLAGS.GUILD_MESSAGES] });
 
-	client.once('ready', () => {
+	client.once('ready', async () => {
+
+		console.log('Fixing up metrics');
+
+		// Fixup metrics
+		let initialGuildCount = client.guilds.cache.size;
+		metrics.guildCounter.set(initialGuildCount);
+
+		await usingDb(async (db) => {
+			const collection = db.collection(reminderCollection);
+			let initialReminderCount = await collection.countDocuments();
+			metrics.reminderCounter.set(initialReminderCount);
+		})
+
 		console.log('NecroBot is ready!');
 	});
 
 	// Setup the slash commands when joining a guild
 	// Message the owner if there are any issues
 	client.on('guildCreate', async guild => {
+		metrics.guildCounter.inc(1);
 		await setupCommands(guild, guild.owner)
+	});
+
+	client.on('guildDelete', async _ => {
+		metrics.guildCounter.dec(1);
 	});
 
 	client.on('messageCreate', async message => {
@@ -47,12 +66,17 @@ const setupBot = () => {
 	client.on('interactionCreate', async interaction => {
 		if (!interaction.isCommand()) return;
 
-		for (let i = 0; i < allCommands.length; i++) {
-			let command = allCommands[i];
-			if (command.name === interaction.commandName) {
-				await command.execute(interaction);
-				return;
+		const end = metrics.commandTimer.startTimer()
+		try {
+			for (let i = 0; i < allCommands.length; i++) {
+				let command = allCommands[i];
+				if (command.name === interaction.commandName) {
+					await command.execute(interaction);
+					return;
+				}
 			}
+		} finally {
+			end();
 		}
 	});
 
