@@ -39,7 +39,7 @@ services:
     ports:
       - "3000:3000"
     volumes:
-      - ./configs/grafana/:/etc/grafana/provisioning
+      - ./configs/grafana:/etc/grafana
       - grafana-data:/var/lib/grafana
 
 volumes:
