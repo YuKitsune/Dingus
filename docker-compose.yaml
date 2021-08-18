@@ -6,7 +6,9 @@ services:
     ports:
       - "27017:27017"
     volumes:
-      - necrobot-database-data:/data/db
+      - mongodb-data:/data/db
+    networks:
+      - private
 
   bot:
     build:
@@ -16,20 +18,24 @@ services:
       - database
     restart: always
     ports:
-      - "8085:8085"
+      - "8080:8080"
     environment:
       DB_HOST: database:27017
       DB_NAME: necrobot
+    networks:
+      - private
 
   prometheus:
     image: prom/prometheus:v2.21.0
     restart: always
     ports:
-      - "9000:9090"
+      - "9000:9000"
     volumes:
       - ./configs/prometheus:/etc/prometheus
       - prometheus-data:/prometheus
     command: --web.enable-lifecycle --config.file=/etc/prometheus/prometheus.yml
+    networks:
+      - private
 
   grafana:
     image: grafana/grafana:7.5.7
@@ -41,8 +47,15 @@ services:
     volumes:
       - ./configs/grafana:/etc/grafana
       - grafana-data:/var/lib/grafana
+    networks:
+      - public
+      - private
 
 volumes:
-  necrobot-database-data:
+  mongodb-data:
   prometheus-data:
   grafana-data:
+
+networks:
+  public:
+  private:

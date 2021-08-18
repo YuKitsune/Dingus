@@ -6,6 +6,12 @@
   A Discord bot that can ping channels and threads after a certain amount of inactivity.
 </h3>
 
+# Todos
+- Improve logging
+- Get mongodb stuff into grafana
+- Get container stuff into grafana (cAdvisor didn't work)
+- Get logs from all containers into grafana (Loki)
+
 # Commands
 #### `/necro [idle-time] [unit]`
 Using the `necro` command tells NecroBot to ping the current channel after N period of inactivity.

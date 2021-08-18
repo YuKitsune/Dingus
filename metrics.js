@@ -37,7 +37,7 @@ export const setupMetrics = () => {
 
 	// Todo: Move port to env file
 	const app = express();
-	const port = 8085;
+	const port = 8080;
 
 	app.get('/metrics', async (req, res) => {
 		res.set('Content-Type', client.register.contentType)
