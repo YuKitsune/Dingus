@@ -4,9 +4,9 @@ import { metrics } from './metrics.js';
 export let activeReminders = {};
 
 export const setupReminderTimer = async (bot) => {
-	console.log("Resuming existing reminders.");
 	const reminders = await getAllReminders();
 
+	console.log(`Resuming ${reminders.length} reminders`)
 	for (let i = 0; i < reminders.length; i++) {
 		const reminder = reminders[i];
 		const channel = await bot.channels.fetch(reminder.channelId);
@@ -30,6 +30,7 @@ export const addReminderTimerFromStartup = async (bot, channelId, idleSeconds, l
 	// If we're late, just necro the channel immediately
 	// Todo: Maybe just delete the reminder?
 	if (currentUnixTimeSeconds > lastMessageUnixTimeSeconds + idleSeconds) {
+		console.log(`${currentUnixTimeSeconds - lastMessageUnixTimeSeconds + idleSeconds} seconds late for reminder in channel ${channelId}`)
 		metrics.lateCounter.inc();
 		await necro(bot, channelId, idleSeconds);
 		return;
@@ -61,7 +62,7 @@ export const removeReminderTimer = (channelId) => {
 const necro = async (bot, channelId, setupTimerIfRequired) => {
 	const channel = await bot.channels.fetch(channelId);
 	if (!channel || channel.deleted) {
-		console.log(`Time to necro ${channelId} but it's gone...`);
+		console.log(`Time to necro ${channelId} but it's gone`);
 		await removeReminder(channelId);
 		removeReminderTimer(channelId);
 		return;

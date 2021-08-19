@@ -30,11 +30,13 @@ const setupBot = () => {
 	// Setup the slash commands when joining a guild
 	// Message the owner if there are any issues
 	client.on('guildCreate', async guild => {
+		console.log(`Joined guild ${guild.id}`)
 		metrics.guildCounter.inc(1);
 		await setupCommands(guild, guild.owner)
 	});
 
-	client.on('guildDelete', async _ => {
+	client.on('guildDelete', async guild => {
+		console.log(`Left guild ${guild.id}`)
 		metrics.guildCounter.dec(1);
 	});
 
@@ -47,6 +49,7 @@ const setupBot = () => {
 		if (message.guild.ownerId === message.author.id &&
 			message.mentions.has(client.user) &&
 			message.content.toLowerCase().includes("refresh commands")) {
+			console.log(`Server owner for guild ${message.guild.id} requested a commands refresh`)
 			const commandsSetup = await setupCommands(message.guild, message.author)
 			if (commandsSetup) {
 				await message.reply("Done!");

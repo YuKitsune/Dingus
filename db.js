@@ -26,6 +26,7 @@ export const usingDb = async (func, onError = async (_) => {}) => {
 
 export const addOrUpdateReminder = async (channelId, idleSeconds) => {
 	await usingDb(async (db) => {
+		console.log("Adding/updating reminder");
 		const query = { channelId: channelId };
 		const update = { $set: {channelId: channelId, idleSeconds: idleSeconds }};
 		const options = { upsert: true };
@@ -33,17 +34,17 @@ export const addOrUpdateReminder = async (channelId, idleSeconds) => {
 		const result = await db.collection(reminderCollection).updateOne(query, update, options);
 
 		if (result.modifiedCount === 0 && result.upsertedCount === 0) {
-			console.log(`No changes made to the collection.`);
+			console.log(`Tried to add reminder, but no reminders were added or modified`);
 		} else {
 			if (result.matchedCount === 1) {
-				console.log("Matched " + result.matchedCount + " documents.");
+				console.log("Found " + result.matchedCount + " reminder");
 			}
 			if (result.modifiedCount === 1) {
-				console.log("Updated one document.");
+				console.log("Updated one reminder");
 			}
 			if (result.upsertedCount === 1) {
 				metrics.reminderCounter.inc(1);
-				console.log("Inserted one new document.");
+				console.log("Added one reminder");
 			}
 		}
 	});
@@ -71,27 +72,28 @@ export const getReminderFor = async (channelId) => {
 }
 
 export const removeReminder = async (channelId) => {
+	console.log("Removing reminder");
 	await usingDb(async (db) => {
 		const query = { channelId: channelId };
 		const result = await db.collection(reminderCollection).deleteOne(query);
 		if (result.deletedCount === 1) {
 			metrics.reminderCounter.dec(1);
-			console.log("Successfully deleted one document.");
+			console.log("One reminder deleted");
 		} else {
-			console.log("No documents matched the query. Deleted 0 documents.");
+			console.log("No reminders deleted");
 		}
 	});
 }
 
 export const purgeMissingChannels = async (bot) => {
-	console.log("Checking for missing channels.");
+	console.log("Purging unreachable channels");
 
 	const reminders = getAllReminders();
 	for (let i = 0; i < reminders.length; i++) {
 		const reminder = reminders[i];
 		const channel = await bot.channels.fetch(reminder.channelId);
 		if (!channel || channel.deleted) {
-			console.log(`Channel ${reminder.channelId} couldn't be found or was deleted. Removing reminder.`);
+			console.log(`Removing reminder for channel ${reminder.channelId} (couldn't be found or was deleted)`);
 			await removeReminder(reminder.channelId);
 		}
 	}
