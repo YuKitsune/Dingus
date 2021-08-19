@@ -2,7 +2,7 @@ version: "3.9"
 services:
   database:
     restart: always
-    image: 'mongo:latest'
+    image: mongo:latest
     ports:
       - "27017:27017"
     volumes:
@@ -22,11 +22,16 @@ services:
     environment:
       DB_HOST: database:27017
       DB_NAME: necrobot
+      TOKEN: ${TOKEN}
     networks:
       - private
+    logging:
+      driver: "json-file"
+      options:
+        tag: "{{.Name}}"
 
   prometheus:
-    image: prom/prometheus:v2.21.0
+    image: prom/prometheus:latest
     restart: always
     ports:
       - "9000:9000"
@@ -37,8 +42,29 @@ services:
     networks:
       - private
 
+  promtail:
+    image: grafana/promtail:latest
+    volumes:
+      - /var/log:/var/log
+      - /var/lib/docker/containers:/var/lib/docker/containers
+      - ./configs/promtail:/etc/promtail-config/
+    command: -config.file=/etc/promtail-config/promtail-config.yaml
+    networks:
+      - private
+
+  loki:
+    image: grafana/loki:latest
+    ports:
+      - "3100:3100"
+    command: -config.file=/etc/loki/local-config.yaml
+    volumes:
+      - ./configs/loki/loki-config.yaml:/etc/loki/loki-config.yaml
+      - loki-data:/data/loki
+    networks:
+      - private
+
   grafana:
-    image: grafana/grafana:7.5.7
+    image: grafana/grafana:latest
     depends_on:
       - prometheus
     restart: unless-stopped
@@ -54,6 +80,7 @@ services:
 volumes:
   mongodb-data:
   prometheus-data:
+  loki-data:
   grafana-data:
 
 networks:
