@@ -6,12 +6,6 @@
   A Discord bot that can ping channels and threads after a certain amount of inactivity.
 </h3>
 
-# Todos
-- Improve logging
-- Get mongodb stuff into grafana
-- Get container stuff into grafana (cAdvisor didn't work)
-- Get logs from all containers into grafana (Loki)
-
 # Commands
 #### `/necro [idle-time] [unit]`
 Using the `necro` command tells NecroBot to ping the current channel after N period of inactivity.
@@ -22,12 +16,18 @@ Using the `necro` command tells NecroBot to ping the current channel after N per
 The `orcen` command tells NecroBot to cancel any reminders for the current channel.
 
 # Running the bot
-Before NecroBot can be run, a `.env` file needs to be created. For simplicity, most environment variables are already
-specified in the docker-compose file. The only environment variable that needs to be provided is the bot token.
+
+## Pre-requisites
+- [Node](https://nodejs.dev)
+- [Docker](https://www.docker.com/get-started)
+
+## Environment Configuration
+Before NecroBot can be run, a `.env` file needs to be created. Copy the `.env.example` file to `.env` and add the bot
+token to the `TOKEN` variable.
 
 ## Registering the bot
 Bots need to be registered with Discord before they can connect.
-Rather than re-explaining perfectly good docs, I'd reccomend following the [guide provided by Discord.js](https://discordjs.guide/preparations/setting-up-a-bot-application.html#creating-your-bot) on creating bots and acquiring a token.
+Rather than re-explaining perfectly good docs, I'd recommend following the [guide provided by Discord.js](https://discordjs.guide/preparations/setting-up-a-bot-application.html#creating-your-bot) on creating bots and acquiring a token.
 
 ## Permissions
 NecroBot requires a few permissions. In the "OAuth2" tab, ensure the `bot` and `applications.commands` scopes are
@@ -43,7 +43,7 @@ NecroBot is a bare-bones Node.js app using [Discord.js](https://github.com/disco
 [Prometheus](https://prometheus.io) and [Grafana](https://grafana.com) can be used for monitoring.
 
 # Contributing
-Contributions are what make the open source community such an amazing place to be learn, inspire, and create.
+Contributions are what make the open source community such an amazing place to be, learn, inspire, and create.
 Any contributions you make are **greatly appreciated**.
 
 1. Fork the Project

@@ -68,6 +68,7 @@ const necro = async (bot, channelId, setupTimerIfRequired) => {
 		return;
 	}
 
+	// Todo: Randomise responses
 	await channel.send("Get necro'd.");
 
 	// If we should still be necroing the channel, then set the timer again
