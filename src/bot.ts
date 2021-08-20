@@ -1,11 +1,12 @@
-import { Client, Intents } from 'discord.js';
+import {Client, CommandInteraction, Guild, Intents, Message} from 'discord.js';
 import setupCommands from './commands/setupCommands.js';
 import allCommands from './commands/allCommands.js';
 import { addOrUpdateReminder, getReminderFor, reminderCollection, usingDb } from './db.js';
 import { addOrUpdateReminderTimer } from './reminderTimer.js';
 import { metrics } from './metrics.js';
+import { Db } from "mongodb";
 
-const setupBot = () => {
+const setupBot = (): Client => {
 
 	// Setup the client
 	const client = new Client({ intents: [Intents.FLAGS.GUILDS, Intents.FLAGS.GUILD_MESSAGES] });
@@ -18,7 +19,7 @@ const setupBot = () => {
 		let initialGuildCount = client.guilds.cache.size;
 		metrics.guildCounter.set(initialGuildCount);
 
-		await usingDb(async (db) => {
+		await usingDb(async (db: Db) => {
 			const collection = db.collection(reminderCollection);
 			let initialReminderCount = await collection.countDocuments();
 			metrics.reminderCounter.set(initialReminderCount);
@@ -29,18 +30,19 @@ const setupBot = () => {
 
 	// Setup the slash commands when joining a guild
 	// Message the owner if there are any issues
-	client.on('guildCreate', async guild => {
+	client.on('guildCreate', async (guild: Guild) => {
 		console.log(`Joined guild ${guild.id}`)
 		metrics.guildCounter.inc(1);
-		await setupCommands(guild, guild.owner)
+		const owner = await guild.members.fetch(guild.ownerId)
+		await setupCommands(guild, owner);
 	});
 
-	client.on('guildDelete', async guild => {
+	client.on('guildDelete', async (guild: Guild) => {
 		console.log(`Left guild ${guild.id}`)
 		metrics.guildCounter.dec(1);
 	});
 
-	client.on('messageCreate', async message => {
+	client.on('messageCreate', async (message: Message) => {
 
 		// Ignore bots
 		if (message.author.bot) return;
@@ -50,7 +52,9 @@ const setupBot = () => {
 			message.mentions.has(client.user) &&
 			message.content.toLowerCase().includes("refresh commands")) {
 			console.log(`Server owner for guild ${message.guild.id} requested a commands refresh`)
-			const commandsSetup = await setupCommands(message.guild, message.author)
+
+			const author = await message.guild.members.fetch(message.author.id);
+			const commandsSetup = await setupCommands(message.guild, author);
 			if (commandsSetup) {
 				await message.reply("Done!");
 			}
@@ -66,7 +70,7 @@ const setupBot = () => {
 	});
 
 	// Handle any slash commands
-	client.on('interactionCreate', async interaction => {
+	client.on('interactionCreate', async (interaction: CommandInteraction) => {
 		if (!interaction.isCommand()) return;
 
 		const end = metrics.commandTimer.startTimer()

@@ -1,5 +1,5 @@
-import necroCommand from './necro.js'
-import orcenCommand from './orcen.js';
+import necroCommand from './necro'
+import orcenCommand from './orcen';
 
 const allCommands = [necroCommand, orcenCommand];
 

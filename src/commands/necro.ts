@@ -1,5 +1,6 @@
 import { addOrUpdateReminder } from '../db.js';
 import { addOrUpdateReminderTimer } from '../reminderTimer.js';
+import {CommandInteraction, Interaction} from "discord.js";
 
 const idleTimeOptionName = "idle-time";
 const unitOptionName = "unit";
@@ -37,7 +38,7 @@ const necroCommand = {
 			},
 		],
 	}],
-	async execute(interaction) {
+	async execute(interaction: CommandInteraction) {
 		const { channelId } = interaction;
 
 		let idleTime = interaction.options.getInteger(idleTimeOptionName, true);
@@ -57,7 +58,7 @@ const necroCommand = {
 
 export default necroCommand;
 
-const intervalMessage = (idleTime, unitMultiplier) => {
+const intervalMessage = (idleTime: number, unitMultiplier: number) => {
 	let unit;
 	switch (unitMultiplier) {
 	case 1:

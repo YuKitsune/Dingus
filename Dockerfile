@@ -1,10 +1,18 @@
-FROM node:16-alpine
-WORKDIR /usr/src/necrobot
 
-# A wildcard is used to ensure both package.json AND package-lock.json are copied
-# where available (npm@5+)
+# Build stage
+FROM node:latest
+WORKDIR /usr/src/necrobot
+COPY package*.json ./
+COPY tsconfig*.json ./
+COPY ./src ./src
+RUN npm install
+RUN npm run build
+
+# Run stage
+FROM node:latest
+WORKDIR /usr/src/necrobot
 COPY package*.json ./
 RUN npm ci --only=production
-COPY . .
+COPY ./dist/src ./dist/src
 EXPOSE 8080
-CMD [ "node", "index.js" ]
+CMD [ "node", "./dist/src/index.js" ]

@@ -1,5 +1,6 @@
-import { MongoClient } from 'mongodb';
+import {Db, MongoClient} from 'mongodb';
 import { metrics } from './metrics.js';
+import {Client, Snowflake} from "discord.js";
 
 const host = process.env.DB_HOST;
 const dbName = process.env.DB_NAME;
@@ -9,8 +10,10 @@ export const reminderCollection = "reminders";
 
 // Todo: Implement a cache
 
-export const usingDb = async (func, onError = async (_) => {}) => {
+type dbFunc = (db: Db) => Promise<void>;
+type errorHandlerFunc = (err: Error) => Promise<void>;
 
+export const usingDb = async (func: dbFunc, onError: errorHandlerFunc = async (_) => {}) => {
 	const client = new MongoClient(uri);
 	try {
 		await client.connect();
@@ -24,7 +27,7 @@ export const usingDb = async (func, onError = async (_) => {}) => {
 	}
 }
 
-export const addOrUpdateReminder = async (channelId, idleSeconds) => {
+export const addOrUpdateReminder = async (channelId: Snowflake, idleSeconds: number) => {
 	await usingDb(async (db) => {
 		console.log("Adding/updating reminder");
 		const query = { channelId: channelId };
@@ -55,13 +58,13 @@ export const getAllReminders = async () => {
 	let allReminders = [];
 	await usingDb(async (db) => {
 		const allRemindersCursor = await db.collection(reminderCollection).find();
-		await allRemindersCursor.forEach((reminder) => allReminders.push(reminder));
+		await allRemindersCursor.forEach((reminder) => { allReminders.push(reminder) });
 	});
 
 	return allReminders;
 }
 
-export const getReminderFor = async (channelId) => {
+export const getReminderFor = async (channelId: Snowflake) => {
 	let reminder = null;
 	await usingDb(async (db) => {
 		const query = { channelId: channelId };
@@ -71,7 +74,7 @@ export const getReminderFor = async (channelId) => {
 	return reminder;
 }
 
-export const removeReminder = async (channelId) => {
+export const removeReminder = async (channelId: Snowflake) => {
 	console.log("Removing reminder");
 	await usingDb(async (db) => {
 		const query = { channelId: channelId };
@@ -85,10 +88,10 @@ export const removeReminder = async (channelId) => {
 	});
 }
 
-export const purgeMissingChannels = async (bot) => {
+export const purgeMissingChannels = async (bot: Client) => {
 	console.log("Purging unreachable channels");
 
-	const reminders = getAllReminders();
+	const reminders = await getAllReminders();
 	for (let i = 0; i < reminders.length; i++) {
 		const reminder = reminders[i];
 		const channel = await bot.channels.fetch(reminder.channelId);

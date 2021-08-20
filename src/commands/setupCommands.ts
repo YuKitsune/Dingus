@@ -1,6 +1,7 @@
 import allCommands from './allCommands.js';
+import {Guild, GuildMember, User} from "discord.js";
 
-const setupCommands = async (guild, contact) => {
+const setupCommands = async (guild: Guild, contact: GuildMember) => {
 
 	let errorResponse = null;
 	try {
@@ -14,7 +15,7 @@ const setupCommands = async (guild, contact) => {
 	}
 
 	if (errorResponse) {
-		console.error(`Failed to set up commands for guild ${guild.id}. Contacting user ${contact.id} (${contact.username}).`)
+		console.error(`Failed to set up commands for guild ${guild.id}. Contacting user ${contact.id} (${contact.displayName}).`)
 		await contact?.send(`Something went wrong when setting up the slash commands for ${guild.name}.\n\`${errorResponse}\``);
 		return false;
 	}
