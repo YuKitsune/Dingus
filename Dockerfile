@@ -5,6 +5,6 @@ WORKDIR /usr/src/necrobot
 # where available (npm@5+)
 COPY package*.json ./
 RUN npm ci --only=production
-COPY . .
+COPY ./src/ .
 EXPOSE 8080
-CMD [ "node", "index.js" ]
+CMD [ "node", "index.ts" ]

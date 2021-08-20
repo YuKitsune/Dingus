@@ -4,7 +4,7 @@ import express from "express";
 // Meh.
 export let metrics;
 
-const registerMetric = (reg, met) => {
+const registerMetric = (reg: client.Registry, met: client.Metric<any>) => {
 	reg.registerMetric(met);
 	return met;
 }

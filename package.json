@@ -1,15 +1,19 @@
 {
   "name": "necrobot",
   "version": "1.0.0",
-  "description": "",
-  "main": "index.js",
+  "description": "A Discord bot that just pings inactive channels and threads",
+  "main": "src/index.ts",
   "scripts": {
-    "start": "node ./index.js",
+    "build": "tsc",
+    "dev": "ts-node app.ts",
+    "start": "nodemon ./dist/index.js",
+    "prod": "yarn build && yarn start",
+    "format": "prettier-standard '**/*.ts'",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [],
   "author": "",
-  "license": "MIT",
+  "license": "WTFPL",
   "dependencies": {
     "discord.js": "^13.0.0-dev.t1628035429.00d5cee",
     "dotenv": "^10.0.0",
@@ -18,7 +22,10 @@
     "prom-client": "^13.2.0"
   },
   "devDependencies": {
-    "eslint": "^7.32.0"
+    "eslint": "^7.32.0",
+    "ts-loader": "^9.2.5",
+    "typescript": "^4.3.5",
+    "webpack": "^5.51.1"
   },
   "type": "module"
 }

@@ -1,0 +1,9 @@
+{
+  "compilerOptions": {
+    "lib": [ "es2015" ],
+    "allowSyntheticDefaultImports": true,
+    "outDir": "./dist",
+    "allowJs": true,
+    "target": "es5"
+  }
+}
