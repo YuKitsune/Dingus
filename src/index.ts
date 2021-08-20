@@ -1,4 +1,4 @@
-import dotenv from 'dotenv';
+import dotenv = require("dotenv");
 import { purgeMissingChannels } from './db.js';
 import setupBot from './bot.js';
 import { setupReminderTimer } from './reminderTimer.js';

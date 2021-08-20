@@ -1,5 +1,5 @@
-import client from "prom-client";
-import express from "express";
+import * as client from "prom-client";
+import express = require('express');
 
 // Meh.
 export let metrics;
