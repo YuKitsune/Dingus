@@ -1,25 +1,28 @@
-import { CommandInteraction } from "discord.js";
+import { ApplicationCommandData, CommandInteraction } from "discord.js";
 import { setTarget } from "../db";
+import { Command } from "./command";
 
 const userOptionName = "user";
 const randomOptionName = "random";
 
-const targetCommand = {
+const targetCommand: Command  = {
 	name: 'target',
 	description: 'Tells @Dingus be funny.',
-	options: [{
-		name: userOptionName,
-		type: 'USER',
-		description: 'The user to ping.',
-		required: false,
-	},
-    {
-		name: randomOptionName,
-		type: 'BOOLEAN',
-		description: 'Ping a random user, randomly.',
-		required: false,
-	}],
-	async execute(interaction: CommandInteraction) {
+	options: [
+		{
+			name: userOptionName,
+			type: 'USER',
+			description: 'The user to ping.',
+			required: false,
+		},
+		{
+			name: randomOptionName,
+			type: 'BOOLEAN',
+			description: 'Ping a random user, randomly.',
+			required: false,
+		}
+	],
+	async execute(interaction: CommandInteraction): Promise<void> {
 		let targetUser = interaction.options.getUser(userOptionName, false);
         
 		let randomUser = interaction.options.getBoolean(randomOptionName, false);
@@ -33,7 +36,7 @@ const targetCommand = {
         } else {
             await interaction.reply("Huh?")
         }
-	},
+	}
 };
 
 export default targetCommand;
