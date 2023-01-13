@@ -11,7 +11,7 @@ const registerMetric = (reg: client.Registry, met: client.Metric<any>) => {
 
 export const setupMetrics = () => {
 
-	client.collectDefaultMetrics({ prefix: 'necrobot_' });
+	client.collectDefaultMetrics({ prefix: 'dingus_' });
 	const registry = new client.Registry();
 	metrics = {
 		guildCounter: registerMetric(registry, new client.Gauge({

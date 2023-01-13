@@ -10,7 +10,7 @@ help: ## Shows this help
 .PHONY: build-container
 build-container: ## Builds the docker container for the bot
 	docker build \
-		-t necrobot \
+		-t dingus \
 		-f Dockerfile \
 		.
 

@@ -1,7 +1,7 @@
 
 # Build stage
 FROM node:latest
-WORKDIR /usr/src/necrobot
+WORKDIR /usr/src/dingus
 COPY package*.json ./
 COPY tsconfig*.json ./
 COPY ./src ./src
@@ -10,7 +10,7 @@ RUN npm run build
 
 # Run stage
 FROM node:latest
-WORKDIR /usr/src/necrobot
+WORKDIR /usr/src/dingus
 COPY package*.json ./
 RUN npm ci --only=production
 COPY ./dist/src ./dist/src

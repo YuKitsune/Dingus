@@ -18,8 +18,7 @@ services:
     ports:
       - "8080:8080"
     environment:
-      DB_HOST: database:27017
-      DB_NAME: necrobot
+      DB_URI: mongo://database:27017/dingus
       TOKEN: ${TOKEN}
 
 volumes:

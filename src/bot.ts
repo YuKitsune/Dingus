@@ -16,7 +16,7 @@ const setupBot = (): Client => {
 		let initialGuildCount = client.guilds.cache.size;
 		metrics.guildCounter.set(initialGuildCount);
 
-		console.log('NecroBot is ready!');
+		console.log('Dingus is ready!');
 	});
 
 	// Setup the slash commands when joining a guild

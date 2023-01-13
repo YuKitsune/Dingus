@@ -1,6 +1,6 @@
 {
-  "name": "necrobot",
-  "description": "A Discord bot that just pings inactive channels and threads",
+  "name": "dingus",
+  "description": "A Discord bot that does a bunch of dumb stuff.",
   "author": "YuKitsune",
   "version": "0.0.1",
   "main": "src/index.ts",

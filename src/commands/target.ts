@@ -6,7 +6,7 @@ const randomOptionName = "random";
 
 const targetCommand = {
 	name: 'target',
-	description: 'Tells @NecroBot be funny.',
+	description: 'Tells @Dingus be funny.',
 	options: [{
 		name: userOptionName,
 		type: 'USER',
