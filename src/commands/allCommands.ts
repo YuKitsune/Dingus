@@ -1,6 +1,5 @@
-import necroCommand from './necro'
-import orcenCommand from './orcen';
+import targetCommand from './target';
 
-const allCommands = [necroCommand, orcenCommand];
+const allCommands = [targetCommand];
 
 export default allCommands;

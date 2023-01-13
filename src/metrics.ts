@@ -19,16 +19,6 @@ export const setupMetrics = () => {
 			help: 'The total number of guilds that the bot is a part of.'
 		})),
 
-		reminderCounter: registerMetric(registry, new client.Gauge({
-			name: 'bot_reminder_count',
-			help: 'The total number of registered reminders.'
-		})),
-
-		lateCounter: registerMetric(registry, new client.Counter({
-			name: 'bot_late_count',
-			help: 'The total number reminders which the bot was late for.'
-		})),
-
 		commandTimer: registerMetric(registry, new client.Histogram({
 			name: 'bot_command_time',
 			help: 'The amount of time it takes for a command to process.'
@@ -45,6 +35,6 @@ export const setupMetrics = () => {
 	});
 
 	app.listen(port, () => {
-		console.log(`NecroBot listening at http://localhost:${port}`)
+		console.log(`Metrics available at http://localhost:${port}`)
 	});
 }

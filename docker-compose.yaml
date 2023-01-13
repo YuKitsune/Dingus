@@ -7,8 +7,6 @@ services:
       - "27017:27017"
     volumes:
       - mongodb-data:/data/db
-    networks:
-      - private
 
   bot:
     build:
@@ -23,66 +21,6 @@ services:
       DB_HOST: database:27017
       DB_NAME: necrobot
       TOKEN: ${TOKEN}
-    networks:
-      - private
-    logging:
-      driver: "json-file"
-      options:
-        tag: "{{.Name}}"
-
-  prometheus:
-    image: prom/prometheus:latest
-    restart: always
-    ports:
-      - "9000:9000"
-    volumes:
-      - ./configs/prometheus:/etc/prometheus
-      - prometheus-data:/prometheus
-    command: --web.enable-lifecycle --config.file=/etc/prometheus/prometheus.yml
-    networks:
-      - private
-
-  promtail:
-    image: grafana/promtail:latest
-    volumes:
-      - /var/log:/var/log
-      - /var/lib/docker/containers:/var/lib/docker/containers
-      - ./configs/promtail:/etc/promtail-config/
-    command: -config.file=/etc/promtail-config/promtail-config.yaml
-    networks:
-      - private
-
-  loki:
-    image: grafana/loki:latest
-    ports:
-      - "3100:3100"
-    command: -config.file=/etc/loki/local-config.yaml
-    volumes:
-      - ./configs/loki/loki-config.yaml:/etc/loki/loki-config.yaml
-      - loki-data:/data/loki
-    networks:
-      - private
-
-  grafana:
-    image: grafana/grafana:latest
-    depends_on:
-      - prometheus
-    restart: unless-stopped
-    ports:
-      - "3000:3000"
-    volumes:
-      - ./configs/grafana:/etc/grafana
-      - grafana-data:/var/lib/grafana
-    networks:
-      - public
-      - private
 
 volumes:
   mongodb-data:
-  prometheus-data:
-  loki-data:
-  grafana-data:
-
-networks:
-  public:
-  private:
