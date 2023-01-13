@@ -1,9 +1,8 @@
 import {Client, CommandInteraction, Guild, Intents, Message} from 'discord.js';
-import setupCommands from './commands/setupCommands.js';
 import allCommands from './commands/allCommands.js';
-import { getTarget, usingDb } from './db.js';
+import { getTarget } from './db.js';
 import { metrics } from './metrics.js';
-import { Db } from "mongodb";
+import refreshCommands from './commands/refreshCommands.js';
 
 const setupBot = (): Client => {
 
@@ -16,6 +15,8 @@ const setupBot = (): Client => {
 		let initialGuildCount = client.guilds.cache.size;
 		metrics.guildCounter.set(initialGuildCount);
 
+		await refreshCommands(client);
+
 		console.log('Dingus is ready!');
 	});
 
@@ -23,7 +24,6 @@ const setupBot = (): Client => {
 	client.on('guildCreate', async (guild: Guild) => {
 		console.log(`Joined guild ${guild.id}`)
 		metrics.guildCounter.inc(1);
-		await setupCommands(guild);
 	});
 
 	client.on('guildDelete', async (guild: Guild) => {
