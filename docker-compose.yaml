@@ -18,8 +18,9 @@ services:
     ports:
       - "8080:8080"
     environment:
-      DB_URI: mongo://database:27017/dingus
+      DB_URI: mongodb://database:27017/dingus?retryWrites=true&writeConcern=majority
       TOKEN: ${TOKEN}
+      CLIENT_ID: ${CLIENT_ID}
 
 volumes:
   mongodb-data:
