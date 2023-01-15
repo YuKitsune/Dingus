@@ -22,8 +22,8 @@ Rather than re-explaining perfectly good docs, I'd recommend following the [guid
 
 ## Permissions
 Dingus requires a few permissions. In the "OAuth2" tab, ensure the `bot` and `applications.commands` scopes are
-selected, and the `View Channels`, `Send Messages`, `Public Threads`, `Private Threads`, `Embed Links`, `Attach Files`,
-`Read Message History`, and `Use Slash Commands` bot permissions are selected.
+selected, and the `Read Messages / View Channels`, `Send Messages`, `Public Threads`, `Private Threads`, `Embed Links`, `Attach Files`,
+`Read Message History`, `Add Reactions`, and `Use Slash Commands` bot permissions are selected.
 
 ## Docker Compose
 There is a Makefile and docker-compose file here to make it pretty easy to run. Running `make compose-fresh` will spin
