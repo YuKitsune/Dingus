@@ -1,7 +1,9 @@
 import {Db, MongoClient} from 'mongodb';
-import {Guild, User} from "discord.js";
+import {EmojiResolvable, Guild, GuildEmoji, User} from "discord.js";
 
 export const targetsCollection = "targets";
+
+export type Target = string | "random";
 
 // Todo: Implement a cache
 
@@ -16,33 +18,38 @@ export const usingDb = async (func: dbFunc, onError: errorHandlerFunc = async (_
 		await func(database);
 	} catch(e) {
 		await onError(e);
-		console.log(`Error using DB: ${e}`);
 	} finally {
 		await client.close();
 	}
 }
 
-export const setTarget = async (guild: Guild, user: User | "random" | null) => {
-	console.log("Setting target");
+export const setTarget = async (guild: Guild, user: User | "random", emoji: string) => {
 	await usingDb(async (db) => {
 		const query = { guildId: guild.id };
 
 		const target = user == "random" ? "random" : user?.id ?? null;
-		const update = { $set: {guildId: guild.id, target: target }};
+		const update = { $set: {guildId: guild.id, target: target, emoji: emoji }};
 		const options = { upsert: true };
 
 		await db.collection(targetsCollection).updateOne(query, update, options);
 	});
 }
 
-export const getTarget = async (guild: Guild) => {
-	var result;
+export const getTarget = async (guild: Guild): Promise<{target: Target, emoji: string} | null> => {
+	let result = null;
 	await usingDb(async (db) => {
 		const query = { guildId: guild.id };
 
 		const dbResult = await db.collection(targetsCollection).findOne(query);
-		result = dbResult?.target;
+		result = { target: dbResult?.target, emoji: dbResult?.emoji };
 	});
 
 	return result;
+}
+
+export const unsetTarget = async (guild: Guild) => {
+	await usingDb(async (db) => {
+		const query = { guildId: guild.id };
+		await db.collection(targetsCollection).deleteOne(query);
+	});
 }

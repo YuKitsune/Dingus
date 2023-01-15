@@ -1,6 +1,5 @@
-import { Command } from './command';
 import targetCommand from './target';
 
-const allCommands: Command[] = [targetCommand];
+const allCommands = [targetCommand];
 
 export default allCommands;
