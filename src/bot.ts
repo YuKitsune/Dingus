@@ -13,24 +13,28 @@ const setupBot = (): Client => {
 
 	client.once(Events.ClientReady, async () => {
 
-		console.log('Fixing up metrics');
+		console.log('📈 Fixing up metrics');
 		let initialGuildCount = client.guilds.cache.size;
 		metrics.guildCounter.set(initialGuildCount);
 
+		console.log('♻️ Refreshing commands');
 		const clientId = process.env.CLIENT_ID;
 		const token = process.env.TOKEN;
 		await refreshCommands(clientId, token, allCommands);
 
-		console.log('Dingus is ready!');
+		console.log('✅ Dingus is ready!');
+
+		const inviteLink = "https://discord.com/api/oauth2/authorize?client_id=872312568105037834&permissions=2147601472&scope=bot%20applications.commands";
+		console.log(`🔗 Invite link: ${inviteLink}`);
 	});
 
-		console.log(`Joined guild ${guild.id}`)
 	client.on(Events.GuildCreate, async (guild: Guild) => {
+		console.log(`🏃 Joined guild ${guild.id}`)
 		metrics.guildCounter.inc(1);
 	});
 
-		console.log(`Left guild ${guild.id}`)
 	client.on(Events.GuildDelete, async (guild: Guild) => {
+		console.log(`🏃 Left guild ${guild.id}`)
 		metrics.guildCounter.dec(1);
 	});
 
