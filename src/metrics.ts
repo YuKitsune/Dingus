@@ -35,6 +35,6 @@ export const setupMetrics = () => {
 	});
 
 	app.listen(port, () => {
-		console.log(`Metrics available at http://localhost:${port}`)
+		console.log(`📈 Metrics available at http://localhost:${port}`)
 	});
 }
