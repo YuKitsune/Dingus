@@ -4,8 +4,6 @@ import { setupMetrics } from './metrics.js';
 
 const main = async () => {
 
-	console.log("Starting Dingus")
-
 	// Load from .env file
 	dotenv.config();
 
