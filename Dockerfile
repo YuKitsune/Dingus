@@ -1,6 +1,6 @@
 
 # Build stage
-FROM node:latest
+FROM node:latest AS build
 WORKDIR /usr/src/dingus
 COPY package*.json ./
 COPY tsconfig*.json ./
@@ -13,6 +13,6 @@ FROM node:latest
 WORKDIR /usr/src/dingus
 COPY package*.json ./
 RUN npm ci --only=production
-COPY ./dist/src ./dist/src
+COPY --from=build /usr/src/dingus/dist ./dist
 EXPOSE 8080
 CMD [ "node", "./dist/src/index.js" ]
