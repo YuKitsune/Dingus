@@ -17,6 +17,7 @@ export const usingDb = async (func: dbFunc, onError: errorHandlerFunc = async (_
 		const database = client.db();
 		await func(database);
 	} catch(e) {
+		console.error("Database error:", e)
 		await onError(e);
 	} finally {
 		await client.close();
