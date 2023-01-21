@@ -5,6 +5,7 @@ import { metrics } from './metrics.js';
 import refreshCommands from './commands/refreshCommands.js';
 import { CommandFailedEvent } from 'mongodb';
 import { executeTargetCommand, targetCommandName } from './commands/target.js';
+import schedCommand, { executeSchedCommand, schedCommandName } from './commands/sched.js';
 
 const setupBot = (): Client => {
 
@@ -64,6 +65,10 @@ const setupBot = (): Client => {
 			switch (interaction.commandName) {
 				case targetCommandName:
 					await executeTargetCommand(interaction);
+					break;
+				case schedCommandName:
+					await executeSchedCommand(interaction);
+					break;
 			}
 		})
 	});
