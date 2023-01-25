@@ -25,7 +25,7 @@ tasks:
       - go test -v ./...
 
   clean:
-    desc: Removes the bin directory
+    desc: Removes build artifacts and node_modules
     cmds:
       - rm -rf dist
       - rm -rf node_modules
