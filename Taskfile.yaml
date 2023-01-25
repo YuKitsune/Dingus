@@ -1,0 +1,41 @@
+version: '3'
+
+vars:
+  DOCKER_COMPOSE_CMD: docker-compose --env-file=./.env
+
+tasks:
+  init:
+    desc: Installs necessary dependencies
+    cmds:
+      - npm install
+
+  build:
+    desc: Builds the bot
+    cmds:
+      - npm run build
+
+  start:
+    desc: Runs the bot
+    cmds:
+      - npm start
+
+  test:
+    desc: Runs all tests
+    cmds:
+      - go test -v ./...
+
+  clean:
+    desc: Removes the bin directory
+    cmds:
+      - rm -rf dist
+      - rm -rf node_modules
+
+  deps:
+    desc: 'Docker-compose alias specifically for running dependencies (E.g: Database)'
+    cmds:
+      - '{{.DOCKER_COMPOSE_CMD}} {{.CLI_ARGS}} database'
+
+  compose:
+    desc: Docker-compose alias 
+    cmds:
+      - '{{.DOCKER_COMPOSE_CMD}} {{.CLI_ARGS}}'
